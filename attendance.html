@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rural School Attendance System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .connection-status {
+            background-color: var(--success);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .connection-status.offline {
+            background-color: var(--warning);
+        }
+        
+        .connection-status i {
+            margin-right: 5px;
+        }
+        
+        .main-content {
+            display: flex;
+            margin-top: 20px;
+            gap: 20px;
+        }
+        
+        .sidebar {
+            flex: 0 0 250px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-menu a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: var(--dark);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .content {
+            flex: 1;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .page-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .page-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .card {
+            background-color: #f9fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: var(--secondary);
+        }
+        
+        button.secondary {
+            background-color: #6c757d;
+        }
+        
+        button.secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .attendance-table th, .attendance-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .attendance-table th {
+            background-color: #f1f5ff;
+            font-weight: 600;
+        }
+        
+        .attendance-table tr:hover {
+            background-color: #f9fafc;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .present {
+            background-color: #e7f4e4;
+            color: #2e7d32;
+        }
+        
+        .absent {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .sync-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+        
+        .tab-container {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .qr-scanner-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        #qr-video {
+            width: 100%;
+            border-radius: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+        }
+        
+        #qr-canvas {
+            display: none;
+        }
+        
+        .scan-area {
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .scan-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.3);
+        }
+        
+        .student-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: none;
+        }
+        
+        .student-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 15px;
+        }
+        
+        .admin-panel {
+            margin-top: 20px;
+        }
+        
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .admin-table th, .admin-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .admin-table th {
+            background-color: #f1f5ff;
+            font-weight: 600;
+        }
+        
+        .admin-table tr:hover {
+            background-color: #f9fafc;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                flex: 0 0 auto;
+                margin-bottom: 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-school"></i>
+                    Rural School Attendance
+                </div>
+                <div class="connection-status" id="connectionStatus">
+                    <i class="fas fa-wifi"></i> Online
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <div class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="active" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="#" data-page="students"><i class="fas fa-users"></i> Students</a></li>
+                    <li><a href="#" data-page="classes"><i class="fas fa-chalkboard-teacher"></i> Classes</a></li>
+                    <li><a href="#" data-page="attendance"><i class="fas fa-clipboard-list"></i> Attendance</a></li>
+                    <li><a href="#" data-page="reports"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                    <li><a href="#" data-page="admin"><i class="fas fa-cog"></i> Admin</a></li>
+                    <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </div>
+            
+            <div class="content">
+                <!-- Dashboard Page -->
+                <div class="page-content active" id="dashboard-page">
+                    <h1 class="page-title">
+                        <i class="fas fa-home"></i> Dashboard
+                    </h1>
+                    
+                    <div class="card">
+                        <h2 class="card-title">Today's Summary</h2>
+                        <div id="dashboard-summary">
+                            <p>Loading dashboard data...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Students Page -->
+                <div class="page-content" id="students-page">
+                    <h1 class="page-title">
+                        <i class="fas fa-users"></i> Student Management
+                    </h1>
+                    
+                    <div class="card">
+                        <h2 class="card-title">All Students</h2>
+                        <div class="form-group">
+                            <label for="filterClass">Filter by Class</label>
+                            <select id="filterClass">
+                                <option value="">All Classes</option>
+                            </select>
+                        </div>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Roll No</th>
+                                    <th>Name</th>
+                                    <th>Class</th>
+                                    <th>QR Code</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTable">
+                                <tr>
+                                    <td colspan="5" style="text-align: center;">Loading students...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Classes Page -->
+                <div class="page-content" id="classes-page">
+                    <h1 class="page-title">
+                        <i class="fas fa-chalkboard-teacher"></i> Class Management
+                    </h1>
+                    
+                    <div class="card">
+                        <h2 class="card-title">All Classes</h2>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Class Name</th>
+                                    <th>Student Count</th>
+                                </tr>
+                            </thead>
+                            <tbody id="classesTable">
+                                <tr>
+                                    <td colspan="3" style="text-align: center;">Loading classes...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Attendance Page -->
+                <div class="page-content" id="attendance-page">
+                    <h1 class="page-title">
+                        <i class="fas fa-clipboard-list"></i> Student Attendance
+                    </h1>
+                    
+                    <div class="tab-container">
+                        <div class="tab active" data-tab="manual">Manual Attendance</div>
+                        <div class="tab" data-tab="qr">QR Code Scanner</div>
+                    </div>
+                    
+                    <div class="tab-content active" id="manual-tab">
+                        <div class="card">
+                            <h2 class="card-title">Select Class</h2>
+                            <div class="form-group">
+                                <label for="classSelect">Class</label>
+                                <select id="classSelect">
+                                    <option value="">-- Select Class --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="dateSelect">Date</label>
+                                <input type="date" id="dateSelect" value="">
+                            </div>
+                            <button id="loadStudentsBtn">Load Students</button>
+                        </div>
+                        
+                        <div class="card">
+                            <h2 class="card-title">Mark Attendance</h2>
+                            <table class="attendance-table">
+                                <thead>
+                                    <tr>
+                                        <th>Roll No</th>
+                                        <th>Student Name</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsList">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center;">Please select a class and date to load students</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <div class="action-buttons">
+                                <button id="markAllPresent">Mark All Present</button>
+                                <button id="markAllAbsent" class="secondary">Mark All Absent</button>
+                                <button id="saveAttendance">Save Attendance</button>
+                                <button id="syncAttendance" class="secondary">Sync Data</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="qr-tab">
+                        <div class="card">
+                            <h2 class="card-title">QR Code Attendance</h2>
+                            
+                            <div class="form-group">
+                                <label for="qrClassSelect">Class</label>
+                                <select id="qrClassSelect">
+                                    <option value="">-- Select Class --</option>
+                                </select>
+                            </div>
+                            
+                            <div class="qr-scanner-container">
+                                <div class="scan-area">
+                                    <video id="qr-video" playsinline></video>
+                                    <div class="scan-overlay"></div>
+                                    <canvas id="qr-canvas" hidden></canvas>
+                                </div>
+                                
+                                <button id="start-scanner">Start Scanner</button>
+                                <button id="stop-scanner" class="secondary">Stop Scanner</button>
+                                
+                                <div id="scanner-result"></div>
+                            </div>
+                            
+                            <div class="student-card" id="studentCard">
+                                <div class="student-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <h3 id="studentName">Student Name</h3>
+                                <p>Roll No: <span id="studentRollNo">-</span></p>
+                                <p>Class: <span id="studentClass">-</span></p>
+                                <div class="action-buttons">
+                                    <button id="markPresentQR">Mark Present</button>
+                                    <button id="markAbsentQR" class="secondary">Mark Absent</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reports Page -->
+                <div class="page-content" id="reports-page">
+                    <h1 class="page-title">
+                        <i class="fas fa-chart-bar"></i> Reports
+                    </h1>
+                    
+                    <div class="card">
+                        <h2 class="card-title">Attendance Reports</h2>
+                        <div class="form-group">
+                            <label for="reportClass">Class</label>
+                            <select id="reportClass">
+                                <option value="">-- Select Class --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportStartDate">Start Date</label>
+                            <input type="date" id="reportStartDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="reportEndDate">End Date</label>
+                            <input type="date" id="reportEndDate">
+                        </div>
+                        <button id="generateReport">Generate Report</button>
+                        <table class="admin-table" id="reportTable" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Present</th>
+                                    <th>Absent</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Admin Page -->
+                <div class="page-content" id="admin-page">
+                    <h1 class="page-title">
+                        <i class="fas fa-cog"></i> Admin Panel
+                    </h1>
+                    
+                    <div class="card">
+                        <h2 class="card-title">Manage Classes</h2>
+                        <div class="form-group">
+                            <label for="newClassName">New Class Name</label>
+                            <input type="text" id="newClassName" placeholder="Enter class name">
+                        </div>
+                        <button id="addClass">Add Class</button>
+                    </div>
+                    
+                    <div class="card">
+                        <h2 class="card-title">Manage Students</h2>
+                        <div class="form-group">
+                            <label for="studentClass">Class</label>
+                            <select id="studentClass">
+                                <option value="">-- Select Class --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="newRollNo">Roll No</label>
+                            <input type="text" id="newRollNo" placeholder="Enter roll number">
+                        </div>
+                        <div class="form-group">
+                            <label for="newStudentName">Student Name</label>
+                            <input type="text" id="newStudentName" placeholder="Enter student name">
+                        </div>
+                        <div class="form-group">
+                            <label for="newQRCode">QR Code</label>
+                            <input type="text" id="newQRCode" placeholder="Enter QR code">
+                        </div>
+                        <button id="addStudent">Add Student</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="sync-notification" id="syncNotification">
+        <i class="fas fa-sync"></i> <span id="syncMessage">Data synced successfully!</span>
+    </div>
+
+    <script>
+       // Base URL for API
+const API_BASE = '/api';
+
+// Global variables
+let currentPage = 'dashboard';
+let classes = [];
+let currentStudents = [];
+let currentAttendance = {};
+
+document.addEventListener('DOMContentLoaded', async function() {
+    // Set default date to today
+    const today = new Date();
+    const formattedDate = today.toISOString().substr(0, 10);
+    document.getElementById('dateSelect').value = formattedDate;
+    document.getElementById('reportStartDate').value = formattedDate;
+    document.getElementById('reportEndDate').value = formattedDate;
+    
+    // Check online status
+    updateConnectionStatus();
+    window.addEventListener('online', updateConnectionStatus);
+    window.addEventListener('offline', updateConnectionStatus);
+    
+    // Tab functionality for attendance page
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            this.classList.add('active');
+            document.getElementById(this.dataset.tab + '-tab').classList.add('active');
+        });
+    });
+    
+    // Sidebar navigation
+    document.querySelectorAll('.sidebar-menu a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.sidebar-menu a').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            document.getElementById(this.dataset.page + '-page').classList.add('active');
+            
+            currentPage = this.dataset.page;
+            loadPageData();
+        });
+    });
+    
+    // Load students button click
+    document.getElementById('loadStudentsBtn').addEventListener('click', loadStudentsAndAttendance);
+    
+    // Mark all buttons
+    document.getElementById('markAllPresent').addEventListener('click', function() {
+        markAllStudents(true);
+    });
+    
+    document.getElementById('markAllAbsent').addEventListener('click', function() {
+        markAllStudents(false);
+    });
+    
+    // Save attendance
+    document.getElementById('saveAttendance').addEventListener('click', saveAttendance);
+    
+    // Sync data
+    document.getElementById('syncAttendance').addEventListener('click', syncData);
+    
+    // QR Scanner buttons
+    document.getElementById('start-scanner').addEventListener('click', startScanner);
+    document.getElementById('stop-scanner').addEventListener('click', stopScanner);
+    
+    // QR Mark buttons
+    document.getElementById('markPresentQR').addEventListener('click', function() {
+        markStudentQR(true);
+    });
+    
+    document.getElementById('markAbsentQR').addEventListener('click', function() {
+        markStudentQR(false);
+    });
+    
+    // Report generation
+    document.getElementById('generateReport').addEventListener('click', generateReport);
+    
+    // Admin add class
+    document.getElementById('addClass').addEventListener('click', addClass);
+    
+    // Admin add student
+    document.getElementById('addStudent').addEventListener('click', addStudent);
+    
+    // Initialize IndexedDB
+    await initDB();
+    
+    // Load initial data
+    await loadClasses();
+    populateClassSelects();
+    loadPageData();
+    
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+            .then(() => console.log('Service Worker registered'))
+            .catch(err => console.error('Service Worker registration failed:', err));
+    }
+});
+
+function updateConnectionStatus() {
+    const statusElement = document.getElementById('connectionStatus');
+    if (navigator.onLine) {
+        statusElement.innerHTML = '<i class="fas fa-wifi"></i> Online';
+        statusElement.classList.remove('offline');
+    } else {
+        statusElement.innerHTML = '<i class="fas fa-wifi-off"></i> Offline';
+        statusElement.classList.add('offline');
+    }
+}
+
+async function loadClasses() {
+    try {
+        const response = await fetch(`${API_BASE}/classes`);
+        if (!response.ok) throw new Error('Failed to load classes');
+        classes = await response.json();
+    } catch (err) {
+        console.error(err);
+        showSyncNotification('Failed to load classes. Working offline.');
+    }
+}
+
+function populateClassSelects() {
+    const selects = [
+        document.getElementById('classSelect'),
+        document.getElementById('qrClassSelect'),
+        document.getElementById('filterClass'),
+        document.getElementById('reportClass'),
+        document.getElementById('studentClass')
+    ];
+    
+    selects.forEach(select => {
+        select.innerHTML = '<option value="">-- Select Class --</option>';
+        classes.forEach(cls => {
+            const option = document.createElement('option');
+            option.value = cls.id;
+            option.textContent = cls.name;
+            select.appendChild(option);
+        });
+    });
+}
+
+async function loadPageData() {
+    switch (currentPage) {
+        case 'dashboard':
+            await loadDashboardSummary();
+            break;
+        case 'students':
+            await loadAllStudents();
+            break;
+        case 'classes':
+            await loadAllClasses();
+            break;
+        case 'reports':
+            break;
+        case 'admin':
+            break;
+    }
+}
+
+async function loadDashboardSummary() {
+    const summaryDiv = document.getElementById('dashboard-summary');
+    summaryDiv.innerHTML = '<p>Loading...</p>';
+    
+    try {
+        const today = new Date().toISOString().substr(0, 10);
+        let totalPresent = 0;
+        let totalAbsent = 0;
+        let totalStudents = 0;
+        
+        for (let cls of classes) {
+            const att = await getAttendance(cls.id, today);
+            totalStudents += att.length;
+            totalPresent += att.filter(a => a.status === 'Present').length;
+            totalAbsent += att.filter(a => a.status === 'Absent').length;
+        }
+        
+        summaryDiv.innerHTML = `
+            <p>Total Students: ${totalStudents}</p>
+            <p>Present Today: ${totalPresent}</p>
+            <p>Absent Today: ${totalAbsent}</p>
+        `;
+    } catch (err) {
+        summaryDiv.innerHTML = '<p>Failed to load summary.</p>';
+    }
+}
+
+async function loadAllStudents() {
+    const tableBody = document.getElementById('studentsTable');
+    tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Loading...</td></tr>';
+    
+    const filterClass = document.getElementById('filterClass').value;
+    
+    try {
+        let allStudents = [];
+        if (filterClass) {
+            allStudents = await getStudents(filterClass);
+        } else {
+            for (let cls of classes) {
+                const students = await getStudents(cls.id);
+                allStudents = allStudents.concat(students.map(s => ({...s, class_name: cls.name})));
+            }
+        }
+        
+        tableBody.innerHTML = '';
+        allStudents.forEach(student => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${student.id}</td>
+                <td>${student.roll_no}</td>
+                <td>${student.name}</td>
+                <td>${student.class_name || getClassName(student.class_id)}</td>
+                <td>${student.qr_code || 'N/A'}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    } catch (err) {
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Failed to load students.</td></tr>';
+    }
+}
+
+async function getClassName(classId) {
+    const cls = classes.find(c => c.id === parseInt(classId));
+    return cls ? cls.name : 'Unknown';
+}
+
+async function loadAllClasses() {
+    const tableBody = document.getElementById('classesTable');
+    tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Loading...</td></tr>';
+    
+    try {
+        for (let cls of classes) {
+            const students = await getStudents(cls.id);
+            cls.student_count = students.length;
+        }
+        
+        tableBody.innerHTML = '';
+        classes.forEach(cls => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${cls.id}</td>
+                <td>${cls.name}</td>
+                <td>${cls.student_count}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    } catch (err) {
+        tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Failed to load classes.</td></tr>';
+    }
+}
+
+async function getStudents(classId) {
+    try {
+        const response = await fetch(`${API_BASE}/students/${classId}`);
+        if (!response.ok) throw new Error('Failed to load students');
+        return await response.json();
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}
+
+async function getAttendance(classId, date) {
+    try {
+        const response = await fetch(`${API_BASE}/attendance/${classId}?date=${date}`);
+        if (!response.ok) throw new Error('Failed to load attendance');
+        return await response.json();
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}
+
+async function loadStudentsAndAttendance() {
+    const classId = document.getElementById('classSelect').value;
+    const date = document.getElementById('dateSelect').value;
+    
+    if (!classId || !date) {
+        alert('Please select both class and date');
+        return;
+    }
+    
+    const tableBody = document.getElementById('studentsList');
+    tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Loading...</td></tr>';
+    
+    try {
+        currentStudents = await getStudents(classId);
+        const attendanceData = await getAttendance(classId, date);
+        
+        currentAttendance = {};
+        attendanceData.forEach(att => {
+            currentAttendance[att.student_id] = {
+                status: att.status,
+                timestamp: att.timestamp
+            };
+        });
+        
+        tableBody.innerHTML = '';
+        currentStudents.forEach(student => {
+            const status = currentAttendance[student.id]?.status || 'Absent';
+            const timestamp = currentAttendance[student.id]?.timestamp || 'N/A';
+            const row = document.createElement('tr');
+            row.setAttribute('data-id', student.id);
+            row.innerHTML = `
+                <td>${student.roll_no}</td>
+                <td>${student.name}</td>
+                <td><span class="status-badge ${status.toLowerCase()}">${status}</span></td>
+                <td>${timestamp}</td>
+                <td>
+                    <button class="mark-present" data-id="${student.id}">Present</button>
+                    <button class="mark-absent" data-id="${student.id}">Absent</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+        
+        document.querySelectorAll('.mark-present').forEach(button => {
+            button.addEventListener('click', function() {
+                markStudent(this.dataset.id, true);
+            });
+        });
+        
+        document.querySelectorAll('.mark-absent').forEach(button => {
+            button.addEventListener('click', function() {
+                markStudent(this.dataset.id, false);
+            });
+        });
+    } catch (err) {
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Failed to load students.</td></tr>';
+    }
+}
+
+function markStudent(studentId, isPresent) {
+    currentAttendance[studentId] = {
+        status: isPresent ? 'Present' : 'Absent',
+        timestamp: new Date().toISOString()
+    };
+    const row = document.querySelector(`tr[data-id="${studentId}"]`);
+    const statusCell = row.querySelector('td:nth-child(3)');
+    const timestampCell = row.querySelector('td:nth-child(4)');
+    const status = isPresent ? 'Present' : 'Absent';
+    statusCell.innerHTML = `<span class="status-badge ${status.toLowerCase()}">${status}</span>`;
+    timestampCell.textContent = currentAttendance[studentId].timestamp;
+}
+
+function markAllStudents(isPresent) {
+    currentStudents.forEach(student => {
+        markStudent(student.id, isPresent);
+    });
+}
+
+async function saveAttendance() {
+    const classId = document.getElementById('classSelect').value;
+    const date = document.getElementById('dateSelect').value;
+    
+    if (!classId || !date) {
+        alert('Please select both class and date');
+        return;
+    }
+    
+    const attendanceData = Object.entries(currentAttendance).map(([student_id, data]) => ({
+        student_id: parseInt(student_id),
+        status: data.status
+    }));
+    
+    try {
+        if (navigator.onLine) {
+            const response = await fetch(`${API_BASE}/attendance`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    class_id: parseInt(classId),
+                    date,
+                    attendance: attendanceData
+                })
+            });
+            if (!response.ok) throw new Error('Failed to save attendance');
+            showSyncNotification('Attendance saved successfully');
+        } else {
+            await saveToIndexedDB(classId, date, attendanceData);
+            showSyncNotification('Attendance saved offline. Will sync when online.');
+            if ('serviceWorker' in navigator && 'SyncManager' in window) {
+                navigator.serviceWorker.ready.then(registration => {
+                    registration.sync.register('sync-attendance');
+                });
+            }
+        }
+    } catch (err) {
+        console.error(err);
+        showSyncNotification('Failed to save attendance');
+    }
+}
+
+let scanning = false;
+const video = document.getElementById("qr-video");
+const canvas = document.getElementById("qr-canvas");
+const context = canvas.getContext("2d");
+
+function startScanner() {
+    const classId = document.getElementById('qrClassSelect').value;
+    if (!classId) {
+        alert('Please select a class first');
+        return;
+    }
+    
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+        .then(function(stream) {
+            video.srcObject = stream;
+            video.setAttribute("playsinline", true);
+            video.play();
+            
+            scanning = true;
+            requestAnimationFrame(tick);
+            
+            document.getElementById('start-scanner').disabled = true;
+            document.getElementById('stop-scanner').disabled = false;
+        })
+        .catch(function(err) {
+            console.error("Error accessing camera: ", err);
+            alert("Error accessing camera: " + err.message);
+        });
+}
+
+function stopScanner() {
+    scanning = false;
+    const stream = video.srcObject;
+    if (stream) {
+        const tracks = stream.getTracks();
+        tracks.forEach(function(track) {
+            track.stop();
+        });
+    }
+    
+    video.srcObject = null;
+    
+    document.getElementById('start-scanner').disabled = false;
+    document.getElementById('stop-scanner').disabled = true;
+}
+
+function tick() {
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.height = video.videoHeight;
+        canvas.width = video.videoWidth;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: "dontInvert",
+        });
+        
+        if (code) {
+            processQRCode(code.data);
+        }
+    }
+    
+    if (scanning) {
+        requestAnimationFrame(tick);
+    }
+}
+
+async function processQRCode(qrData) {
+    try {
+        const response = await fetch(`${API_BASE}/student/qr/${qrData}`);
+        if (!response.ok) throw new Error('Student not found');
+        const studentData = await response.json();
+        
+        document.getElementById('studentName').textContent = studentData.name;
+        document.getElementById('studentRollNo').textContent = studentData.roll_no;
+        document.getElementById('studentClass').textContent = `Class ${studentData.class_id}`;
+        document.getElementById('studentCard').style.display = 'block';
+        
+        window.currentQRStudent = studentData;
+    } catch (e) {
+        console.error('Error processing QR code:', e);
+        alert('Invalid QR code or student not found');
+    }
+}
+
+async function markStudentQR(isPresent) {
+    if (!window.currentQRStudent) {
+        alert('No student data available');
+        return;
+    }
+    
+    const classId = window.currentQRStudent.class_id;
+    const today = new Date().toISOString().substr(0, 10);
+    
+    const attendanceData = [{
+        student_id: window.currentQRStudent.id,
+        status: isPresent ? 'Present' : 'Absent'
+    }];
+    
+    try {
+        if (navigator.onLine) {
+            const response = await fetch(`${API_BASE}/attendance`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    class_id: classId,
+                    date: today,
+                    attendance: attendanceData
+                })
+            });
+            if (!response.ok) throw new Error('Failed to save');
+            showSyncNotification('Attendance marked successfully');
+        } else {
+            await saveToIndexedDB(classId, today, attendanceData);
+            showSyncNotification('Marked offline. Will sync later.');
+            if ('serviceWorker' in navigator && 'SyncManager' in window) {
+                navigator.serviceWorker.ready.then(registration => {
+                    registration.sync.register('sync-attendance');
+                });
+            }
+        }
+        
+        document.getElementById('studentCard').style.display = 'none';
+    } catch (err) {
+        showSyncNotification('Failed to mark attendance');
+    }
+}
+
+let db;
+async function initDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open("AttendanceDB", 2);
+        
+        request.onerror = (event) => reject(event.target.error);
+        
+        request.onupgradeneeded = (event) => {
+            db = event.target.result;
+            if (!db.objectStoreNames.contains('attendance')) {
+                const attendanceStore = db.createObjectStore("attendance", { keyPath: "id", autoIncrement: true });
+                attendanceStore.createIndex("classId_date", ["classId", "date"], { unique: false });
+            }
+            if (!db.objectStoreNames.contains('syncQueue')) {
+                db.createObjectStore("syncQueue", { keyPath: "id", autoIncrement: true });
+            }
+        };
+        
+        request.onsuccess = (event) => {
+            db = event.target.result;
+            resolve();
+        };
+    });
+}
+
+async function saveToIndexedDB(classId, date, attendanceData) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(["attendance"], "readwrite");
+        const store = transaction.objectStore("attendance");
+        
+        const record = {
+            classId: parseInt(classId),
+            date,
+            attendance: attendanceData,
+            synced: false
+        };
+        
+        const addRequest = store.add(record);
+        
+        addRequest.onsuccess = () => resolve();
+        addRequest.onerror = () => reject(addRequest.error);
+    });
+}
+
+async function syncData() {
+    if (!navigator.onLine) {
+        showSyncNotification("Cannot sync while offline");
+        return;
+    }
+    
+    try {
+        const unsynced = await getUnsyncedRecords();
+        if (unsynced.length === 0) {
+            showSyncNotification("All data is already synced");
+            return;
+        }
+        
+        for (let record of unsynced) {
+            const response = await fetch(`${API_BASE}/attendance`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    class_id: record.classId,
+                    date: record.date,
+                    attendance: record.attendance
+                })
+            });
+            if (response.ok) {
+                await markAsSynced(record.id);
+            }
+        }
+        
+        showSyncNotification(`Synced ${unsynced.length} records successfully`);
+    } catch (err) {
+        showSyncNotification('Sync failed');
+    }
+}
+
+async function getUnsyncedRecords() {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(["attendance"]);
+        const store = transaction.objectStore("attendance");
+        const request = store.getAll();
+        
+        request.onsuccess = () => {
+            resolve(request.result.filter(r => !r.synced));
+        };
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function markAsSynced(id) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(["attendance"], "readwrite");
+        const store = transaction.objectStore("attendance");
+        const getRequest = store.get(id);
+        
+        getRequest.onsuccess = () => {
+            const record = getRequest.result;
+            record.synced = true;
+            const updateRequest = store.put(record);
+            updateRequest.onsuccess = resolve;
+            updateRequest.onerror = reject;
+        };
+    });
+}
+
+function showSyncNotification(message) {
+    const notification = document.getElementById('syncNotification');
+    document.getElementById('syncMessage').textContent = message;
+    notification.style.display = 'block';
+    
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 3000);
+}
+
+async function generateReport() {
+    const classId = document.getElementById('reportClass').value;
+    const startDate = document.getElementById('reportStartDate').value;
+    const endDate = document.getElementById('reportEndDate').value;
+    
+    if (!classId || !startDate || !endDate) {
+        alert('Please select class and date range');
+        return;
+    }
+    
+    const table = document.getElementById('reportTable');
+    const body = document.getElementById('reportBody');
+    body.innerHTML = '';
+    table.style.display = 'table';
+    
+    try {
+        const dates = getDateRange(startDate, endDate);
+        for (let date of dates) {
+            const att = await getAttendance(classId, date);
+            const present = att.filter(a => a.status === 'Present').length;
+            const absent = att.filter(a => a.status === 'Absent').length;
+            const total = att.length;
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${date}</td>
+                <td>${present}</td>
+                <td>${absent}</td>
+                <td>${total}</td>
+            `;
+            body.appendChild(row);
+        }
+    } catch (err) {
+        body.innerHTML = '<tr><td colspan="4">Failed to generate report</td></tr>';
+    }
+}
+
+function getDateRange(start, end) {
+    const dates = [];
+    let current = new Date(start);
+    const endDate = new Date(end);
+    
+    while (current <= endDate) {
+        dates.push(current.toISOString().substr(0, 10));
+        current.setDate(current.getDate() + 1);
+    }
+    return dates;
+}
+
+async function addClass() {
+    const name = document.getElementById('newClassName').value.trim();
+    if (!name) {
+        alert('Please enter class name');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/classes`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        });
+        if (!response.ok) throw new Error('Failed to add class');
+        await loadClasses();
+        populateClassSelects();
+        document.getElementById('newClassName').value = '';
+        showSyncNotification('Class added successfully');
+    } catch (err) {
+        showSyncNotification('Failed to add class');
+    }
+}
+
+async function addStudent() {
+    const classId = document.getElementById('studentClass').value;
+    const rollNo = document.getElementById('newRollNo').value.trim();
+    const name = document.getElementById('newStudentName').value.trim();
+    const qrCode = document.getElementById('newQRCode').value.trim();
+    
+    if (!classId || !rollNo || !name || !qrCode) {
+        alert('Please fill all fields');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/students`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ roll_no: rollNo, name, class_id: parseInt(classId), qr_code: qrCode })
+        });
+        if (!response.ok) throw new Error('Failed to add student');
+        document.getElementById('newRollNo').value = '';
+        document.getElementById('newStudentName').value = '';
+        document.getElementById('newQRCode').value = '';
+        showSyncNotification('Student added successfully');
+    } catch (err) {
+        showSyncNotification('Failed to add student');
+    }
+}
+    </script>
+</body>
+</html>
