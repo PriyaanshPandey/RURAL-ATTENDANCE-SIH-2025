@@ -22,7 +22,7 @@ This system is designed to save up to
 
 ## ✨ Key Features 
 
-1.  Attendance Marking
+1.  **Attendance Marking**
 The platform offers a versatile approach to marking attendance, ensuring reliability even with internet issues.
 
 
@@ -42,14 +42,16 @@ The platform offers a versatile approach to marking attendance, ensuring reliabi
 
    
 
-2. Management and Reports
+2. **Management and Reports**
+   
 The system includes an Admin Dashboard for easy management and data visualization.
 
 
-Class & Student Management: Easily add new classes and manage student records, including Roll Numbers, Names, and associated QR Codes.
+**Class & Student Management** : Easily add new classes and manage student records, including Roll Numbers, Names, and associated QR Codes.
 
- **Attendance Reports:** Generate daily, weekly, or custom-date-range reports showing the total number of **Present** and **Absent** students for a selected class. The reports are generated instantly for transparent records[cite: 86].
-3. Usability and Accessibility
+ **Attendance Reports:** Generate daily, weekly, or custom-date-range reports showing the total number of **Present** and **Absent** students for a selected class. The reports are generated instantly for transparent records. 
+ 
+3.**Usability and Accessibility**
 The design focuses on ease of use for non-technical users and regional compatibility.
 
 
@@ -70,59 +72,67 @@ Our system architecture is a Progressive Web App (PWA) designed for an offline-f
 
 
 
-Architecture Flow
+**Architecture Flow**
 
-Teacher Access: The teacher logs in via the PWA on their smartphone or tablet.
-
-Attendance: They choose the "Take Attendance" view.
-
-Online Mode: QR scan data is immediately sent to the Attendance database via the network.
+**Teacher Access** : The teacher logs in via the PWA on their smartphone or tablet. 
 
 
-Offline Mode: If the network is unavailable, the QR scan data is stored temporarily in IndexedDB (client-side storage).
-
-Synchronization: Once the device connects to the internet, the data from IndexedDB is automatically synced to the central Attendance database.
+**Attendance** : They choose the "Take Attendance" view. 
 
 
-Reporting: The "See Attendance" view and report generation process retrieve data from the main database via a Flask API, enabling data visualization and report generation.
-
-Core Technologies
-
-Frontend: Progressive Web App (PWA) 
+**Online Mode** : QR scan data is immediately sent to the Attendance database via the network. 
 
 
 
-Offline Storage: IndexedDB (for local, temporary storage) 
+**Offline Mode** : If the network is unavailable, the QR scan data is stored temporarily in IndexedDB (client-side storage). 
 
 
-Backend API: Flask API (for handling report generation and database interactions) 
+**Synchronization** : Once the device connects to the internet, the data from IndexedDB is automatically synced to the central Attendance database. 
 
-Database: Central Attendance Database
 
-Addressing Challenges
-We designed specific solutions for common risks:
 
-Challenge	Solution
-Unreliable Internet	
+**Reporting** : The "See Attendance" view and report generation process retrieve data from the main database via a Flask API, enabling data visualization and report generation. 
+
+
+## Core Technologies
+
+### Frontend: Progressive Web App (PWA) 
+
+
+
+### Offline Storage: IndexedDB (for local, temporary storage) 
+
+
+### Backend API: Flask API (for handling report generation and database interactions) 
+
+### Database: Central Attendance Database
+
+### Addressing Challenges
+We designed specific solutions for common risks: 
+
+Challenge	Solution 
+
+1. Unreliable Internet	
 Use offline data storage (IndexedDB) and sync when online.
 
 
-Expensive Hardware	
+
+2. Expensive Hardware	
 Use teachers’ existing smartphones/tablets for scanning (minimal infrastructure).
 
 
 
-Proxy Attendance	
-Implement 
 
-teacher approval for the QR scan to verify the student's presence.
+3. Proxy Attendance	
+Implement teacher approval for the QR scan to verify the student's presence.
 
-Technical Training	
+
+5. Technical Training	
 Conduct short, targeted training sessions for teachers and students.
 
 
-Export to Sheets
-📈 Future Scope
+
+## 📈 Future Scope
 We plan to enhance the system with advanced features:
 
 
