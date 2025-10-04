@@ -17,23 +17,23 @@ We developed a
 
 This system is designed to save up to 
 
-82% of time and cut costs by 90% compared to expensive hardware systems.
+**82% of time** and **cut costs by 90%** compared to expensive hardware systems.
 
 
-✨ Key Features
-1. Attendance Marking
+## ✨ Key Features
+1.  Attendance Marking
 The platform offers a versatile approach to marking attendance, ensuring reliability even with internet issues.
 
 
 
-Primary Method: QR Code Scanning: Teachers can quickly mark attendance by scanning a student's unique QR code. (See technical approach for flow)
+**Primary Method** : QR Code Scanning: Teachers can quickly mark attendance by scanning a student's unique QR code. (See technical approach for flow)
 
 
 
-Secondary Method: Manual Entry: A manual attendance feature is available as a fallback in case QR entry fails or for daily use, allowing teachers to mark students as Present or Absent with a single click.
+**Secondary Method** : Manual Entry: A manual attendance feature is available as a fallback in case QR entry fails or for daily use, allowing teachers to mark students as Present or Absent with a single click.
 
 
-Bulk Actions: Features like "Mark All Present" and "Mark All Absent" simplify the process further.
+**Bulk Actions** : Features like "Mark All Present" and "Mark All Absent" simplify the process further.
 
 2. Management and Reports
 The system includes an Admin Dashboard for easy management and data visualization.
