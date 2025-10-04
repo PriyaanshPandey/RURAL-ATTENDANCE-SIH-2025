@@ -36,7 +36,11 @@ The platform offers a versatile approach to marking attendance, ensuring reliabi
 **Secondary Method** : Manual Entry: A manual attendance feature is available as a fallback in case QR entry fails or for daily use, allowing teachers to mark students as Present or Absent with a single click.
 
 
-**Bulk Actions** : Features like "Mark All Present" and "Mark All Absent" simplify the process further.
+**Bulk Actions** : Features like "Mark All Present" and "Mark All Absent" simplify the process further. 
+
+
+
+   
 
 2. Management and Reports
 The system includes an Admin Dashboard for easy management and data visualization.
