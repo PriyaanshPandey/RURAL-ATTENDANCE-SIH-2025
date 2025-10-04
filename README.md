@@ -41,25 +41,22 @@ The system includes an Admin Dashboard for easy management and data visualizatio
 
 Class & Student Management: Easily add new classes and manage student records, including Roll Numbers, Names, and associated QR Codes.
 
-* * **Attendance Reports:** Generate daily, weekly, or custom-date-range reports showing the total number of **Present** and **Absent** students for a selected class. The reports are generated instantly for transparent records[cite: 86].
+ **Attendance Reports:** Generate daily, weekly, or custom-date-range reports showing the total number of **Present** and **Absent** students for a selected class. The reports are generated instantly for transparent records[cite: 86].
 3. Usability and Accessibility
 The design focuses on ease of use for non-technical users and regional compatibility.
 
 
-PWA Architecture: As a Progressive Web App, it offers a native app-like experience on the web, enabling offline mode.
+**PWA Architecture**: As a Progressive Web App, it offers a native app-like experience on the web, enabling offline mode.
+
+
+**Offline Functionality**: Can work even without an internet connection in rural regions. Data is temporarily stored locally and synced later when online.
+
+
+**Multilingual Support**: Available in English, Hindi, and Punjabi to cater to diverse rural populations.
 
 
 
-Offline Functionality: Can work even without an internet connection in rural regions. Data is temporarily stored locally and synced later when online.
-
-
-
-
-Multilingual Support: Available in English, Hindi, and Punjabi to cater to diverse rural populations.
-
-
-
-⚙️ Technical Approach
+## ⚙️ Technical Approach
 Our system architecture is a Progressive Web App (PWA) designed for an offline-first experience, ensuring operational feasibility even with intermittent internet access.
 
 
